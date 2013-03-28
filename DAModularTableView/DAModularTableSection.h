@@ -13,8 +13,8 @@
 
 @property (nonatomic, strong) NSMutableArray *rows;
 
-@property (nonatomic, strong) NSString *headerTitle;
-@property (nonatomic, strong) NSString *footerTitle;
+@property (nonatomic, copy) NSString *headerTitle;
+@property (nonatomic, copy) NSString *footerTitle;
 
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, strong) UIView *footerView;

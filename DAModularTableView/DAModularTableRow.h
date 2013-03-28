@@ -10,10 +10,10 @@
 
 @interface DAModularTableRow : NSObject
 
-@property (nonatomic, strong) NSString *text;
-@property (nonatomic, strong) NSString *detailText;
-@property (nonatomic, strong) UIImage *image;
-@property (nonatomic, strong) UIView *accessoryView;
+@property (nonatomic, copy) NSString *text;
+@property (nonatomic, copy) NSString *detailText;
+@property (nonatomic, copy) UIImage *image;
+@property (nonatomic, copy) UIView *accessoryView;
 
 @property (nonatomic) CGFloat rowHeight;
 
