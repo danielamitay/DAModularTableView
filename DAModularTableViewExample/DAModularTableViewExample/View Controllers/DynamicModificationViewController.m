@@ -27,7 +27,8 @@
     heightChangeRow.rowHeight = 60.0f;
     heightChangeRow.didSelectBlock = ^(NSIndexPath *indexPath){
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-        heightChangeRow.rowHeight = (heightChangeRow.rowHeight == 60.0f ? 120.0f : 60.0f);
+        DAModularTableRow *tableRow = [self.tableView rowAtIndexPath:indexPath];
+        tableRow.rowHeight = (tableRow.rowHeight == 60.0f ? 120.0f : 60.0f);
         [self.tableView beginUpdates];
         [self.tableView endUpdates];
     };
@@ -37,8 +38,8 @@
     textChangeRow.text = @"Text Change";
     textChangeRow.didSelectBlock = ^(NSIndexPath *indexPath){
         self.view.tag += 1;
-        textChangeRow.text = [NSString stringWithFormat:@"Text Change (%d)", self.view.tag];
         DAModularTableRow *tableRow = [self.tableView rowAtIndexPath:indexPath];
+        tableRow.text = [NSString stringWithFormat:@"Text Change (%d)", self.view.tag];
         [self.tableView reloadRow:tableRow animated:YES];
     };
     [self.tableView insertRow:textChangeRow];
@@ -50,10 +51,10 @@
     styleChangeRow.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     styleChangeRow.didSelectBlock = ^(NSIndexPath *indexPath){
         
-        styleChangeRow.cellStyle = (styleChangeRow.cellStyle == UITableViewCellStyleValue1 ? UITableViewCellStyleSubtitle : UITableViewCellStyleValue1);
-        styleChangeRow.accessoryType = (styleChangeRow.accessoryType == UITableViewCellAccessoryDisclosureIndicator ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryDisclosureIndicator);
-        
         DAModularTableRow *tableRow = [self.tableView rowAtIndexPath:indexPath];
+        tableRow.cellStyle = (tableRow.cellStyle == UITableViewCellStyleValue1 ? UITableViewCellStyleSubtitle : UITableViewCellStyleValue1);
+        tableRow.accessoryType = (tableRow.accessoryType == UITableViewCellAccessoryDisclosureIndicator ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryDisclosureIndicator);
+        
         [self.tableView reloadRow:tableRow animated:YES];
     };
     [self.tableView insertRow:styleChangeRow];
