@@ -50,8 +50,9 @@
     pushRow.text = @"Push Notifications";
     pushRow.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     pushRow.didSelectBlock = ^(NSIndexPath *indexPath){
+        DAModularTableRow *tableRow = [self.tableView rowAtIndexPath:indexPath];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
-                                                        message:pushRow.text
+                                                        message:tableRow.text
                                                        delegate:self
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];
@@ -64,8 +65,9 @@
     otherRow.text = @"Other Preferences";
     otherRow.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     otherRow.didSelectBlock = ^(NSIndexPath *indexPath){
+        DAModularTableRow *tableRow = [self.tableView rowAtIndexPath:indexPath];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
-                                                        message:otherRow.text
+                                                        message:tableRow.text
                                                        delegate:self
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];
@@ -83,8 +85,9 @@
     DAModularTableRow *emailRow = [DAModularTableRow row];
     emailRow.text = @"Share via Email";
     emailRow.didSelectBlock = ^(NSIndexPath *indexPath){
+        DAModularTableRow *tableRow = [self.tableView rowAtIndexPath:indexPath];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
-                                                        message:emailRow.text
+                                                        message:tableRow.text
                                                        delegate:self
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];
@@ -96,8 +99,9 @@
     DAModularTableRow *smsRow = [DAModularTableRow row];
     smsRow.text = @"Share via SMS";
     smsRow.didSelectBlock = ^(NSIndexPath *indexPath){
+        DAModularTableRow *tableRow = [self.tableView rowAtIndexPath:indexPath];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
-                                                        message:smsRow.text
+                                                        message:tableRow.text
                                                        delegate:self
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];
@@ -109,6 +113,7 @@
     DAModularTableRow *twitterRow = [DAModularTableRow row];
     twitterRow.text = @"Share via Twitter";
     twitterRow.didSelectBlock = ^(NSIndexPath *indexPath){
+        DAModularTableRow *tableRow = [self.tableView rowAtIndexPath:indexPath];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
                                                         message:twitterRow.text
                                                        delegate:self
