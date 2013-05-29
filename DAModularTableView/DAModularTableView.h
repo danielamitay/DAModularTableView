@@ -13,6 +13,10 @@
 
 @property (nonatomic, strong) NSMutableArray *sections;
 
+@property (nonatomic, copy) void(^rowMovedBlock)(NSIndexPath *sourceIndexPath, NSIndexPath *destinationIndexPath);
+@property (nonatomic, copy) void(^rowDeletedBlock)(NSIndexPath *indexPath);
+@property (nonatomic, copy) DAModularTableRow *(^rowInsertedBlock)(NSIndexPath *indexPath);
+
 #pragma mark - Accessing Rows, Sections, Cells and Index Paths
 
 - (DAModularTableSection *)sectionAtIndex:(NSInteger)index;
@@ -38,6 +42,8 @@
 
 - (void)reloadSection:(DAModularTableSection *)section
              animated:(BOOL)animated;
+
+- (void)removeAllSectionsAnimated:(BOOL)animated;
 
 #pragma mark - Inserting, Removing, Reloading Rows
 
