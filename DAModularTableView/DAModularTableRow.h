@@ -10,20 +10,28 @@
 
 @interface DAModularTableRow : NSObject
 
-@property (nonatomic, copy) NSString *text;
-@property (nonatomic, copy) NSString *detailText;
-@property (nonatomic, copy) UIImage *image;
-@property (nonatomic, copy) UIView *accessoryView;
+@property (nonatomic, strong) NSString *text;
+@property (nonatomic, strong) NSString *detailText;
+@property (nonatomic, strong) UIImage *image;
+@property (nonatomic, strong) UIView *accessoryView;
+@property (nonatomic, strong) UIView *editingAccessoryView;
 
 @property (nonatomic) CGFloat rowHeight;
 
 @property (nonatomic) UITableViewCellSelectionStyle selectionStyle;
+@property (nonatomic) UITableViewCellEditingStyle editingStyle;
 @property (nonatomic) UITableViewCellAccessoryType accessoryType;
+@property (nonatomic) UITableViewCellAccessoryType editingAccessoryType;
 @property (nonatomic) UITableViewCellStyle cellStyle;
+@property (nonatomic) NSString *cellIdentifier;
 @property (nonatomic) UITableViewRowAnimation rowAnimation;
+@property (nonatomic) BOOL canBeMoved;
+@property (nonatomic) BOOL shouldIndentWhileEditing;
 
 @property (nonatomic, copy) void(^didSelectBlock)(NSIndexPath *indexPath);
+@property (nonatomic, copy) void(^accessoryButtonDidSelectBlock)(NSIndexPath *indexPath);
 @property (nonatomic, copy) void(^cellForRowBlock)(UITableViewCell *cell, NSIndexPath *indexPath);
+@property (nonatomic, copy) NSIndexPath *(^targetIndexPathForMoveFromRowAtIndexPath)(NSIndexPath *indexPath);
 @property (nonatomic) SEL didSelectAction;
 
 + (DAModularTableRow *)row;

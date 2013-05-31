@@ -10,10 +10,12 @@
 
 @implementation DAModularTableRow
 
-@synthesize text, detailText, image, accessoryView;
+@synthesize text, detailText, image, accessoryView, editingAccessoryView;
 @synthesize rowHeight;
-@synthesize selectionStyle, accessoryType, cellStyle, rowAnimation;
-@synthesize didSelectBlock, cellForRowBlock, didSelectAction;
+@synthesize selectionStyle, accessoryType, cellStyle, editingStyle, rowAnimation;
+@synthesize canBeMoved;
+@synthesize didSelectBlock, cellForRowBlock, didSelectAction, accessoryButtonDidSelectBlock;
+@synthesize targetIndexPathForMoveFromRowAtIndexPath;
 
 #pragma mark - Public Methods
 
@@ -28,9 +30,13 @@
     if (self)
     {
         self.selectionStyle = UITableViewCellSelectionStyleBlue;
-        self.accessoryType = UITableViewCellAccessoryNone;
         self.cellStyle = UITableViewCellStyleDefault;
+        self.editingStyle = UITableViewCellEditingStyleNone;
+        self.accessoryType = UITableViewCellAccessoryNone;
+        self.editingAccessoryType = UITableViewCellAccessoryNone;
         self.rowAnimation = UITableViewRowAnimationAutomatic;
+        self.canBeMoved = NO;
+        self.shouldIndentWhileEditing = YES;
     }
     return self;
 }

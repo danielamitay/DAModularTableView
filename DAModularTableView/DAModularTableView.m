@@ -171,6 +171,24 @@
     [self endUpdates];
 }
 
+- (void)removeAllSectionsAnimated:(BOOL)animated
+{
+    [self removeAllSectionsWithRowAnimation:(animated ? UITableViewRowAnimationAutomatic : UITableViewRowAnimationNone)];
+}
+
+- (void)removeAllSectionsWithRowAnimation:(UITableViewRowAnimation)animation
+{
+    NSMutableIndexSet *mutableIndexSet = [[NSMutableIndexSet alloc] init];
+    for(DAModularTableSection *section in self.sections)
+    {
+        [mutableIndexSet addIndex:[self indexForSection:section]];
+    }
+    [self beginUpdates];
+    [self.sections removeAllObjects];
+    [self deleteSections:mutableIndexSet withRowAnimation:animation];
+    [self endUpdates];
+}
+
 - (void)reloadSection:(DAModularTableSection *)section
              animated:(BOOL)animated;
 {
@@ -303,7 +321,7 @@
 {
     DAModularTableRow *tableRow = [self rowAtIndexPath:indexPath];
     
-    NSString *cellIdentifier = [NSString stringWithFormat:@"cellStyle%d", tableRow.cellStyle];
+    NSString *cellIdentifier = (tableRow.cellIdentifier ? tableRow.cellIdentifier : [NSString stringWithFormat:@"cellStyle%d", tableRow.cellStyle]);
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (cell == nil)
     {
@@ -314,9 +332,11 @@
     cell.detailTextLabel.text = tableRow.detailText;
     cell.imageView.image = tableRow.image;
     cell.accessoryView = tableRow.accessoryView;
+    cell.editingAccessoryView = tableRow.editingAccessoryView;
     
     cell.selectionStyle = tableRow.selectionStyle;
     cell.accessoryType = tableRow.accessoryType;
+    cell.editingAccessoryType = tableRow.editingAccessoryType;
     
     if (tableRow.cellForRowBlock)
     {
@@ -372,19 +392,97 @@
         tableRow.didSelectBlock(indexPath);
     }
     
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     if (tableRow.didSelectAction)
     {
         [self performSelector:tableRow.didSelectAction];
     }
-    #pragma clang diagnostic pop
+#pragma clang diagnostic pop
+}
+
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
+{
+    DAModularTableRow *tableRow = [self rowAtIndexPath:indexPath];
+    
+    if (tableRow.accessoryButtonDidSelectBlock)
+    {
+        tableRow.accessoryButtonDidSelectBlock(indexPath);
+    }
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    DAModularTableRow *tableRow = [self rowAtIndexPath:indexPath];
+    return tableRow.editingStyle;
+}
+
+- (BOOL) tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    DAModularTableRow *tableRow = [self rowAtIndexPath:indexPath];
+    return tableRow.shouldIndentWhileEditing;
+}
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
+{
+    DAModularTableRow *rowToMove = [self rowAtIndexPath:sourceIndexPath];
+    
+    DAModularTableSection *sourceSection = [self sectionAtIndex:sourceIndexPath.section];
+    [[sourceSection rows] removeObjectAtIndex:sourceIndexPath.row];
+    
+    DAModularTableSection *destinationSection = [self sectionAtIndex:destinationIndexPath.section];
+    [[destinationSection rows] insertObject:rowToMove atIndex:destinationIndexPath.row];
+    
+    if(self.rowMovedBlock)
+        self.rowMovedBlock(sourceIndexPath, destinationIndexPath);
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        DAModularTableRow *rowToDelete = [self rowAtIndexPath:indexPath];
+        
+        if(self.rowDeletedBlock)
+        {
+            self.rowDeletedBlock(indexPath);
+        }
+        
+        [self removeRow:rowToDelete animated:YES];
+    }
+    else if(editingStyle == UITableViewCellEditingStyleInsert)
+    {
+        if(self.rowInsertedBlock)
+        {
+            DAModularTableRow *rowToBeAdded = self.rowInsertedBlock(indexPath);
+            
+            if(rowToBeAdded)
+                [self insertRow:rowToBeAdded atIndexPath:indexPath animated:YES];
+        }
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     DAModularTableRow *tableRow = [self rowAtIndexPath:indexPath];
     return (tableRow.rowHeight ? tableRow.rowHeight : tableView.rowHeight);
+}
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    DAModularTableRow *tableRow = [self rowAtIndexPath:indexPath];
+    return tableRow && tableRow.canBeMoved;
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath
+{
+    DAModularTableRow *tableRow = [self rowAtIndexPath:sourceIndexPath];
+    if(tableRow.targetIndexPathForMoveFromRowAtIndexPath)
+    {
+        return tableRow.targetIndexPathForMoveFromRowAtIndexPath(proposedDestinationIndexPath);
+    }
+    
+    return proposedDestinationIndexPath;
 }
 
 @end
